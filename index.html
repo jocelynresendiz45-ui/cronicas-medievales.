@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crónicas del Reino - Blog Medieval</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Uncial+Antiqua&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- ESTILOS DE LA CORTE (CSS) --- */
+        body {
+            background-color: #2c241e;
+            background-image: url('https://www.transparenttextures.com/patterns/dark-wood.png');
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            font-family: 'MedievalSharp', serif;
+            color: #f2e3c9;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* El Pergamino donde se escribe */
+        .pergamino {
+            background-color: #e8d5b5;
+            background-image: url('https://www.transparenttextures.com/patterns/parchment.png');
+            width: 100%;
+            max-width: 650px;
+            padding: 50px;
+            box-shadow: 10px 10px 40px rgba(0,0,0,0.9), inset 0 0 100px #c4a47c;
+            border: 1px solid #63452c;
+            border-radius: 3px;
+            margin-bottom: 50px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        h1, h2 {
+            font-family: 'Uncial Antiqua', serif;
+            text-align: center;
+            color: #3d2b1f;
+            margin-top: 0;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.3);
+        }
+
+        .sello-container {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        #emblema {
+            font-size: 80px;
+            margin-bottom: 15px;
+            filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.5));
+            transition: transform 0.3s;
+        }
+
+        select {
+            background: #4a3419;
+            color: #f2e3c9;
+            border: 2px solid #8b5a2b;
+            padding: 10px;
+            font-family: 'MedievalSharp', serif;
+            font-size: 1rem;
+            cursor: pointer;
+            outline: none;
+            border-radius: 5px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            background: transparent;
+            border: none;
+            font-size: 1.4rem;
+            color: #3e2b14;
+            line-height: 1.8;
+            resize: none;
+            outline: none;
+            font-family: 'MedievalSharp', cursive;
+            margin-top: 20px;
+            border-bottom: 1px solid rgba(139, 90, 43, 0.2);
+        }
+
+        /* Botón de Lacre Rojo */
+        .btn-enviar {
+            display: block;
+            margin: 30px auto 0;
+            padding: 15px 40px;
+            background: #7a1212;
+            color: #f2e3c9;
+            border: 3px solid #4a0808;
+            cursor: pointer;
+            font-family: 'Uncial Antiqua', serif;
+            font-size: 1.3rem;
+            box-shadow: 4px 4px 10px rgba(0,0,0,0.6);
+            transition: all 0.2s;
+            border-radius: 50px; /* Forma de sello de cera circular */
+        }
+
+        .btn-enviar:hover {
+            background: #a31a1a;
+            transform: scale(1.05);
+            box-shadow: 6px 6px 15px rgba(0,0,0,0.7);
+        }
+
+        /* Cartas en el muro del reino */
+        .lista-cronicas {
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .carta-enviada {
+            background: #f2e3c9;
+            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+            color: #3e2b14;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 15px solid #7a1212;
+            box-shadow: 8px 8px 25px rgba(0,0,0,0.7);
+            position: relative;
+            animation: cuervoLlega 0.7s ease-out;
+        }
+
+        @keyframes cuervoLlega {
+            0% { opacity: 0; transform: scale(0.8) translateY(50px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .sello-pequeno {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 45px;
+            opacity: 0.8;
+            filter: sepia(0.5);
+        }
+
+        /* Panel de Control */
+        #controles {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-mecanismo {
+            background: rgba(44, 36, 30, 0.9);
+            color: #f2e3c9;
+            padding: 10px 15px;
+            border: 1px solid #8b5a2b;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .btn-mecanismo:hover { background: #4a3419; }
+    </style>
+</head>
+<body>
+
+    <audio id="musica-fondo" loop>
+<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sonido-cuervo">
+        <source src="https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-one/animals_crow_caw_001.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="pergamino">
+        <div class="sello-container">
+            <div id="emblema">🐺</div>
+            <select id="selector-casa" onchange="actualizarEmblema()">
+                <option value="🐺">Casa Stark</option>
+                <option value="🦁">Casa Lannister</option>
+                <option value="🐉">Casa Targaryen</option>
+                <option value="🦌">Casa Baratheon</option>
+                <option value="☀️">Casa Martell</option>
+                <option value="🌹">Casa Tyrell</option>
+                <option value="🦑">Casa Greyjoy</option>
+            </select>
+        </div>
+
+        <h1>Nueva Proclama</h1>
+        <textarea id="texto-carta" placeholder="Escribe tu mensaje para el reino, mi Lord/Lady..."></textarea>
+        <button class="btn-enviar" onclick="enviarCuervo()">Sellar y Enviar</button>
+    </div>
+
+    <div class="lista-cronicas" id="contenedor-cartas">
+        <h2>Crónicas de Poniente</h2>
+        </div>
+
+    <div id="controles">
+        <div class="btn-mecanismo" onclick="toggleMusica()" id="btn-audio">🔊 Música: On</div>
+        <div class="btn-mecanismo" onclick="limpiarCronicas()">🔥 Quemar Archivos</div>
+    </div>
+
+    <script>
+        /* --- LÓGICA DE LOS MAESTRES (JS) --- */
+        const musica = document.getElementById('musica-fondo');
+        const sonidoCuervo = document.getElementById('sonido-cuervo');
+
+        // Cargar mensajes al iniciar desde la base de datos local
+        window.onload = () => {
+            const datosGuardados = JSON.parse(localStorage.getItem('archivo_real')) || [];
+            datosGuardados.forEach(carta => imprimirCartaEnMuro(carta));
+        };
+
+        // Activar música al interactuar (Requisito de navegadores)
+        document.body.addEventListener('click', () => {
+            if (musica.paused) {
+                musica.volume = 0.25;
+                musica.play();
+            }
+        }, { once: true });
+
+        function actualizarEmblema() {
+            const selector = document.getElementById('selector-casa');
+            document.getElementById('emblema').innerText = selector.value;
+            // Pequeña animación al cambiar
+            document.getElementById('emblema').style.transform = 'scale(1.2)';
+            setTimeout(() => { document.getElementById('emblema').style.transform = 'scale(1)'; }, 200);
+        }
+
+        function enviarCuervo() {
+            const texto = document.getElementById('texto-carta').value;
+            const casaSello = document.getElementById('selector-casa').value;
+            const casaNombre = document.getElementById('selector-casa').options[document.getElementById('selector-casa').selectedIndex].text;
+
+            if (texto.trim() === "") {
+                alert("Lord/Lady, no podéis enviar un pergamino en blanco.");
+                return;
+            }
+
+            // Efecto de sonido
+            sonidoCuervo.currentTime = 0;
+            sonidoCuervo.play();
+
+            const nuevaCarta = {
+                id: Date.now(),
+                sello: casaSello,
+                casa: casaNombre,
+                mensaje: texto,
+                fecha: new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
+            };
+
+            // Guardar en LocalStorage
+            const historial = JSON.parse(localStorage.getItem('archivo_real')) || [];
+            historial.push(nuevaCarta);
+            localStorage.setItem('archivo_real', JSON.stringify(historial));
+
+            imprimirCartaEnMuro(nuevaCarta);
+            document.getElementById('texto-carta').value = ""; // Limpiar pluma
+        }
+
+        function imprimirCartaEnMuro(datos) {
+            const contenedor = document.getElementById('contenedor-cartas');
+            const div = document.createElement('div');
+            div.className = 'carta-enviada';
+            div.innerHTML = `
+                <div class="sello-pequeno">${datos.sello}</div>
+                <strong style="font-family: 'Uncial Antiqua'; font-size: 1.2rem;">De la ${datos.casa}:</strong>
+                <p style="white-space: pre-wrap;">${datos.mensaje}</p>
+                <small style="color: #8b5a2b; font-style: italic;">— Sellado el ${datos.fecha} —</small>
+            `;
+            // Insertar al principio para que lo más nuevo esté arriba
+            contenedor.insertBefore(div, contenedor.children[1]); 
+        }
+
+        function toggleMusica() {
+            const btn = document.getElementById('btn-audio');
+            if (musica.paused) {
+                musica.play();
+                btn.innerText = "🔊 Música: On";
+            } else {
+                musica.pause();
+                btn.innerText = "🔇 Música: Off";
+            }
+        }
+
+        function limpiarCronicas() {
+            if(confirm("¿Deseáis que el fuego del dragón borre todas las crónicas?")) {
+                localStorage.removeItem('archivo_real');
+                location.reload();
+            }
+        }
+    </script>
+    
+</body>
+</html>
