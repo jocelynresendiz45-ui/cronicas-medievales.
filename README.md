@@ -1,2 +1,2 @@
-# cronicas-medievales.
+# cronicas-medievales
 diario personal estilo GOT
